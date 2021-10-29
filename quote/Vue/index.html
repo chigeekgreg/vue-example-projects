@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/jpg" href="033.jpg">
+  <title>CSCI 467 Product Vue Starter App</title>
+  <!-- Import Styles -->
+  <link rel="stylesheet" href="./assets/styles.css" />
+  <!-- Import Vue.js -->
+  <script src="https://unpkg.com/vue@next"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://kit.fontawesome.com/4c5c5db08c.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <div id="app">
+    <div class="nav-bar">
+      <li class="banner">Plant Repair Services Portal</li>
+      <li class="item-name" v-if="loggedIn">{{ loggedIn.name }}</li>
+      <li class="item-right" v-if="loggedIn" @click="loggedIn=null">Logout</li>
+    </div>
+    <div class="content" v-if="!loggedIn">
+      <account @done="login"></account>
+    </div>  
+    <div class="content" v-else>
+      <quotes-start :associate=loggedIn></quotes-start>
+    </div>
+  </div>
+
+  <!-- Import App -->
+  <script src="./main.js"></script>
+
+  <!-- Import Components -->
+  <script src="./components/Account.js"></script>
+  <script src="./components/QuotesStart.js"></script>
+  <script src="./components/QuoteModal.js"></script>
+  <script src="./components/LineItem.js"></script>
+  <script src="./components/SecretNote.js"></script>
+
+  <!-- Mount App -->
+  <script>
+    const mountedApp = app.mount('#app')
+  </script>
+</body>
+
+</html>
