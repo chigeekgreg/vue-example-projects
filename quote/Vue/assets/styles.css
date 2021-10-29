@@ -1,0 +1,200 @@
+.nav-bar {
+    position: fixed;
+    top: 4px;
+    right: 4px;
+    left: 4px;
+    background: linear-gradient(-90deg, #84cf6a, #16c0b0);
+    height: 40px;
+    z-index: 10;
+}
+.nav-bar li {
+    font-size: 20px;
+    display:  inline-block;
+    zoom: auto;
+    margin-top: 5px;
+    margin-right: 20px;   
+    padding: 3px;
+}
+.banner{
+      color: blanchedalmond;
+}
+input:focus {
+      background-color: 
+      lightyellow;
+}
+.item {
+      color: rgb(35, 54, 3);
+      border: 1px solid blanchedalmond;
+}
+.item-name {
+      color: rgb(35, 54, 3);
+      border: 1px solid blanchedalmond;
+}
+.item-right {
+      float: right;
+      color: rgb(35, 54, 3);
+      border: 1px solid blanchedalmond;
+}
+.item-right:hover {
+      border: 1px solid red;
+      cursor: pointer;
+}
+.item:hover {
+      border: 1px solid red;
+      cursor: pointer;
+}
+.lineitem {
+      display: flex;
+}
+.filterspec {
+      margin: 10px;
+}
+.quote {
+      margin: 4px;
+      border: 2px solid #d8d8d8;
+      display: flex;
+      align-items: center;
+}
+.quote:hover {
+      background-color: rgb(241, 247, 240);
+}
+.quotegrid {
+      display: grid;
+      grid-template-columns: 380px 160px 100px;
+}
+.info {
+      display: flex;
+      width: 200px;
+      margin: 10px;
+}
+.cart {
+    float: right;
+    border: 2px solid #d8d8d8;
+    padding: 10px 30px;
+    background-color: rgb(238, 180, 180);
+}
+.cartempty {
+    float: right;
+    border: 1px solid #d8d8d8;
+    padding: 10px 30px;
+    background-color: white;
+}
+.content {
+      position: relative;
+      top: 50px;
+}
+.account {   
+    margin: 100px;
+}
+.error {
+      color: red;
+      margin: 10px;
+}
+.header-button {
+      margin: 10px;
+      height: 16px;
+      padding: 0px;
+      border-width: 1px;
+}
+.gridform {
+      display: grid;
+      grid-template-columns: 100px 150px;
+}
+.gridlabel {
+      text-align: right;
+      padding-right: 5px;
+}
+.bracketgrid {
+      display: grid;
+      grid-template-columns: 40px 140px 150px 100px;
+      margin: 1px 20px;
+}
+.bracketgrid:hover {
+      background-color: lightgreen;
+}
+.weight {
+      display: flex;
+      text-align: left;
+}
+.prize {
+      width: 70px;
+      text-align: right;
+}
+.edit-list{
+      display: grid;
+      grid-template-columns: 120px 100px;
+      grid-auto-rows: 25px;
+}
+.associates {
+      display: grid;
+      grid-template-columns: 120px 160px 140px;
+      grid-auto-rows: 25px;
+}
+.orderlist:hover {
+      background-color: lightgreen;
+}
+
+.modal-mask {
+      position: fixed;
+      z-index: 9998;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: table;
+      transition: opacity 0.3s ease;
+    }
+    
+    .modal-wrapper {
+      display: table-cell;
+      vertical-align: middle;
+    }
+    
+    .modal-container {
+      width: 90%;
+      margin: 0px auto;
+      padding: 20px 30px;
+      background-color: #fff;
+      border-radius: 2px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
+      transition: all 0.3s ease;
+      font-family: Helvetica, Arial, sans-serif;
+    }
+    
+    .modal-header h3 {
+      margin-top: 0;
+      color: #42b983;
+    }
+    
+    .modal-body {
+      margin: 20px 0;
+    }
+    
+    .modal-default-button {
+      float: right;
+    }
+    
+    /*
+     * The following styles are auto-applied to elements with
+     * transition="modal" when their visibility is toggled
+     * by Vue.js.
+     *
+     * You can easily play with the modal transition by editing
+     * these styles.
+     */
+    
+    .modal-enter {
+      opacity: 0;
+    }
+    
+    .modal-leave-active {
+      opacity: 0;
+    }
+    
+    .modal-enter .modal-container,
+    .modal-leave-active .modal-container {
+      -webkit-transform: scale(1.1);
+      transform: scale(1.1);
+    }
+    

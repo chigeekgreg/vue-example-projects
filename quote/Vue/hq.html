@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/jpg" href="033.jpg">
+  <title>CSCI 467 Quote Vue Starter App</title>
+  <!-- Import Styles -->
+  <link rel="stylesheet" href="./assets/styles.css" />
+  <!-- Import Vue.js -->
+  <script src="https://unpkg.com/vue@next"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://kit.fontawesome.com/4c5c5db08c.js" crossorigin="anonymous"></script>
+  <link href="https://unpkg.com/nprogress@0.2.0/nprogress.css" rel="stylesheet" />
+  <script src="https://unpkg.com/nprogress@0.2.0/nprogress.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <div class="nav-bar">
+      <li class="banner">Plant Repair Services: Headquarters</li>
+      <li class="item" v-on:click="content='list'">Sanction Quotes</li>
+      <li class="item" v-on:click="content='process'">Process Orders</li>
+    </div>
+    <div class="content" v-if="content=='list'">
+      <quotes :mode="'final'"></quotes>
+    </div>  
+    <div class="content" v-if="content=='process'">
+      <quotes :mode="'process'"></quotes>
+    </div>
+  </div>
+
+  <!-- Import App -->
+  <script src="./main.js"></script>
+
+  <!-- Import Components -->
+  <script src="./components/Quotes.js"></script>
+  <script src="./components/QuoteModal.js"></script>
+  <script src="./components/LineItem.js"></script>
+  <script src="./components/SecretNote.js"></script>
+  <!-- Mount App -->
+  <script>
+    const mountedApp = app.mount('#app')
+  </script>
+</body>
+
+</html>
