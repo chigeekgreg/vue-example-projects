@@ -11,6 +11,7 @@ app.component('edit-modal', {
                 </div>
                 <div class="modal-body edit-list">
                   <label>Name:</label> <input v-model="name">
+                  <label>Address:</label> <input v-model="address">
                   <label>New password:</label> <input type="password" v-model="pwd">  
                   <label>Commission:</label> <input v-model="commission">  
                 </div>
@@ -32,13 +33,14 @@ app.component('edit-modal', {
       return {
           name: this.associate.name,
           pwd: '',
+          address: this.associate.address,
           commission: this.associate.commission
       }
   },
   methods: {
     async update() {
       console.log(this.name,this.pwd,this.commission)
-      if (this.name === '' || this.commission === '') {
+      if (this.name === '' || this.address === '' || this.commission === '') {
         alert('Please fill in all fields.')
         return
       }
@@ -48,6 +50,7 @@ app.component('edit-modal', {
           return
       }
       this.associate.name = this.name;
+      this.associate.address = this.address;
       if (this.pwd !== '') {
         this.associate.password = this.pwd
       }

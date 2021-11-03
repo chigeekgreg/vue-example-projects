@@ -33,6 +33,7 @@ app.component('associates', {
             associates: null,
             aName: '',
             aPwd: '',
+            aAddress: '',
             associate: null,
             showModal: false
         }
@@ -48,10 +49,11 @@ app.component('associates', {
                 alert('Please fill in name and password.')
                 return
             }
-            this.associate = {name: this.aName, password: this.aPwd};
+            this.associate = {name: this.aName, address: this.aAddress, password: this.aPwd};
             var resp = await axios.post('http://localhost:3001/createAssociate', this.associate)
             console.log(resp.data);
             this.aName = ''
+            this.aAddress = ''
             this.aPwd = ''
             this.getAssociates()
         },

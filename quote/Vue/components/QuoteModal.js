@@ -86,6 +86,9 @@ app.component('quote-modal', {
         for (var it of oldItems) {
           if (it !== item) {
             this.quote.items.push(it)
+             
+          } else {
+            this.quote.amount -= it.price
           }
         }
       },

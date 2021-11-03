@@ -39,16 +39,6 @@ var port = process.env.PORT || 3000;
 // process JSON data in request body
 app.use(express.json());
 
-app.use(function(req, res, next) {   
-    connLeg.query("set wait_timeout=120;", (err, rows) => {
-        console.log('Legacy: ', rows)
-    })       
-    connAWS.query("set wait_timeout=120;", (err, rows) => {
-        console.log('AWS: ', rows) 
-    })       
-    next();
-})
-
 app.get('/', (req, res) => {
     res.send(
         `<h2>REST backend for Product system</h2>

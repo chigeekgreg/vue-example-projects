@@ -79,8 +79,8 @@ app.post('/processPO', (req, res) => {
 app.post('/createAssociate', (req, res) => {
     // console.log(req.body);
     connDB.query(
-        `INSERT INTO associates (name, password) 
-        VALUES ( '${req.body.name}','${req.body.password}');`,
+        `INSERT INTO associates (name, address, password) 
+        VALUES ( '${req.body.name}','${req.body.address}','${req.body.password}');`,
         function(err, result){
             if (err) throw err;
             // console.log("associate created: " + result.insertId);
@@ -92,7 +92,7 @@ app.post('/updateAssociate', (req, res) => {
     // console.log(req.body);
     connDB.query(
         `UPDATE associates
-        SET name = '${req.body.name}', password = '${req.body.password}', commission = '${req.body.commission}'
+        SET name = '${req.body.name}', address = '${req.body.address}', password = '${req.body.password}', commission = '${req.body.commission}'
         WHERE id = ${req.body.id};`,
         function(err, result){
             if (err) throw err;

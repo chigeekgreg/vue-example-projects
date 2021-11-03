@@ -30,7 +30,7 @@ app.component('quotes', {
                 <div v-if="filter(quote)" class="quotegrid quote" :set="count++">           
                     {{ quote.id }}&nbsp;({{ quote.date.slice(0, 10)}}):&nbsp;{{ aName(quote) + cName(quote) }}
                     <div>\${{ quote.amount.toFixed(2) + quoteStatus(quote.status) }}</div>                             
-                    <button v-if="mode=='final'" v-on:click="edit(quote)">sancion quote</button>                                                        
+                    <button v-if="mode=='final'" v-on:click="edit(quote)">sanction quote</button>                                                        
                     <button v-if="mode=='process'" v-on:click="edit(quote)">process order</button>                                                        
                     <button v-if="mode=='all'" v-on:click="edit(quote)">view</button>                                                        
                 </div>
