@@ -12,16 +12,18 @@ app.component('quote-modal', {
                   {{ quote.customer.street }}<br>
                   {{ quote.customer.city }}<br>
                   {{ quote.customer.contact }}
-                  <div v-if="!isQuote">Fullfilled on: {{ quote.status }}</div>
+                  <div v-if="!isQuote">
+                    Fullfilled on: {{ quote.status }}<br>
+                    Commission: {{ quote.commission }} </div>
                 </div>
                 <div class="modal-body">
                   Email: <input type="email" v-model="email" :disabled="mode!=='open'">              
                   <h4>Line Items: <button class="header-button" @click="newItem()" :disabled="mode=='process'||mode=='all'">new item</button></h4>
-                  <div v-for="item in quote.items">
+                  <div v-for="item in quote.items" v-bind:key="item.id">
                     <line-item :item="item" :mode="mode" @update="updateItem" @remove="removeItem"></line-item>
                   </div>
                   <h4>Secret Notes: <button class="header-button" @click="newNote()" :disabled="mode=='process'||mode=='all'">new note</button></h4>
-                  <div v-for="note in quote.notes">
+                  <div v-for="note in quote.notes" v-bind:key="note.id">
                     <secret-note :note="note" :mode="mode" @update="updateNote" @remove="removeNote"></secret-note>
                   </div>
                   <br>
@@ -81,20 +83,20 @@ app.component('quote-modal', {
       },
       removeItem(item) {
         // console.log('remove:', item)
-        oldItems = this.quote.items
+        // console.log(this.quote.items)       
+        var oldItems = this.quote.items
         this.quote.items = []
         for (var it of oldItems) {
           if (it !== item) {
-            this.quote.items.push(it)
-             
+            this.quote.items.push(it)             
           } else {
-            this.quote.amount -= it.price
+            this.quote.amount -= item.price
           }
         }
       },
       removeNote(note) {
         // console.log('remove:', note)
-        oldNotes = this.quote.notes
+        var oldNotes = this.quote.notes
         this.quote.notes = []
         for (var no of oldNotes) {
           if (no !== note) {
@@ -183,13 +185,14 @@ app.component('quote-modal', {
         NProgress.inc()
         var associate = resp.data[0]
         var commRate = parseInt(response.data.commission)
-        var comm = this.quote.amount * (commRate/100)
-        console.log('Commission: ', comm)
-        associate.commission += comm 
+        this.quote.commission = this.quote.amount * (commRate/100)
+        // console.log('Commission: ', this.quote.commission)
+        associate.commission += this.quote.commission 
         resp = await axios.post('http://localhost:3001/updateAssociate', associate)
         // console.log(resp)
         NProgress.inc()
         this.update()
+        alert(`PO has been processed for ${this.quote.status}.\nCommission of ${this.quote.commission} has been credited to ${associate.name}.`)
         NProgress.done()
       },
       updateItem(item) {
