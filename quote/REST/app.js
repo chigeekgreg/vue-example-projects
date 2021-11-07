@@ -4,12 +4,12 @@ const axios = require('axios');
 const mysql = require('mysql')
 const config = require('./config.json');
 var connLeg;
-var connAWS;
+var connDB;
 
 setInterval(() => {
     console.log('refreshing DB connections')
     connLeg.query("SELECT 1")
-    connAWS.query("SELECT 1")
+    connDB.query("SELECT 1")
 }, 60*60*1000);
 
 (function protectLeg() {
@@ -25,13 +25,13 @@ setInterval(() => {
     })
 })();
 
-(function protectAWS() {
-    connAWS = mysql.createConnection(config.amazon)
-    connAWS.on('error', err => {
+(function protectDB() {
+    connDB = mysql.createConnection(config.db)
+    connDB.on('error', err => {
         if (err.code === 'PROTOCOL_CONNECTION_LOST' ||
             err.code === 'ECONNRESET') {
-            console.log('AWS connection lost, reopen connection')
-            protectAWS()
+            console.log('DB connection lost, reopen connection')
+            protectDB()
         } else {
             throw err
         }
@@ -78,9 +78,9 @@ app.post('/processPO', (req, res) => {
 
 app.post('/createAssociate', (req, res) => {
     // console.log(req.body);
-    connAWS.query(
-        `INSERT INTO associates (name, password) 
-        VALUES ( '${req.body.name}','${req.body.password}');`,
+    connDB.query(
+        `INSERT INTO associates (name, address, password) 
+        VALUES ( '${req.body.name}','${req.body.address}','${req.body.password}');`,
         function(err, result){
             if (err) throw err;
             // console.log("associate created: " + result.insertId);
@@ -90,9 +90,9 @@ app.post('/createAssociate', (req, res) => {
 
 app.post('/updateAssociate', (req, res) => {
     // console.log(req.body);
-    connAWS.query(
+    connDB.query(
         `UPDATE associates
-        SET name = '${req.body.name}', password = '${req.body.password}', commission = '${req.body.commission}'
+        SET name = '${req.body.name}', address = '${req.body.address}', password = '${req.body.password}', commission = '${req.body.commission}'
         WHERE id = ${req.body.id};`,
         function(err, result){
             if (err) throw err;
@@ -103,7 +103,7 @@ app.post('/updateAssociate', (req, res) => {
 
 app.post('/deleteAssociate', (req, res) => {
     // console.log(req.body);
-    connAWS.query(
+    connDB.query(
         `DELETE FROM associates WHERE id=${req.body.id};`,
         function(err, result){
             if (err) throw err;
@@ -121,7 +121,7 @@ app.get('/getAssociates', (req, res) => {
         stmt += ` WHERE name = '${req.query.name}';`
     }
     // console.log(stmt)
-    connAWS.query(stmt, function(err, rows){
+    connDB.query(stmt, function(err, rows){
         if (err) throw err;
         // console.log('rows: ', rows);
         res.send(rows);
@@ -144,7 +144,7 @@ app.get('/getQuotes', (req, res) => {
         stmt += ` WHERE ${where};`
     }
     // console.log(stmt)
-    connAWS.query(stmt, function(err, rows){
+    connDB.query(stmt, function(err, rows){
         if (err) throw err;
         // console.log('rows: ', rows);      
         res.send(rows);
@@ -157,7 +157,7 @@ app.get('/getNotes', (req, res) => {
         stmt += ` WHERE quoteid = '${req.query.quoteid}';`
     }
     // console.log(stmt)
-    connAWS.query(stmt, function(err, rows){
+    connDB.query(stmt, function(err, rows){
         if (err) throw err;
         // console.log('notes: ', rows);      
         res.send(rows);
@@ -170,7 +170,7 @@ app.get('/getItems', (req, res) => {
         stmt += ` WHERE quoteid = '${req.query.quoteid}';`
     }
     // console.log(stmt)
-    connAWS.query(stmt, function(err, rows){
+    connDB.query(stmt, function(err, rows){
         if (err) throw err;
         // console.log('items: ', rows);      
         res.send(rows);
@@ -180,7 +180,7 @@ app.get('/getItems', (req, res) => {
 app.post('/createQuote', (req, res) => {
     // console.log(req.body);
     var quote = req.body;
-    connAWS.query(
+    connDB.query(
         `INSERT INTO quotes (date, associateid, custid, email, amount) 
         VALUES ( '${quote.date}','${quote.associateid}','${quote.custid}','${quote.email}','${quote.amount}');`,
         function(err, result){
@@ -190,7 +190,7 @@ app.post('/createQuote', (req, res) => {
             res.send({msg: `Quote ${quote.id} created`});
             // insert items and notes
             for (item of quote.items) {
-                connAWS.query(
+                connDB.query(
                     `INSERT INTO quoteitems (quoteid, text, price)
                     VALUES(${quote.id}, '${item.text}', '${item.price}')`, (err, result) => {
                         if (err) throw err;
@@ -198,7 +198,7 @@ app.post('/createQuote', (req, res) => {
                     })
             }
             for (note of quote.notes) {
-                connAWS.query(
+                connDB.query(
                     `INSERT INTO quotenotes (quoteid, text)
                     VALUES(${quote.id}, '${note.text}')`, (err, result) => {
                         if (err) throw err;
@@ -211,20 +211,20 @@ app.post('/createQuote', (req, res) => {
 app.post('/updateQuote', (req, res) => {
     // console.log(req.body);
     var quote = req.body;
-    connAWS.query(
+    connDB.query(
         `UPDATE quotes SET email = '${quote.email}', amount = '${quote.amount}', commission = '${quote.commission}', status = '${quote.status}'
          WHERE id=${quote.id};`, (err, result) => {
         if (err) throw err;  
         // console.log(result);
         res.send({msg: `Quote ${quote.id} updated`});
-        connAWS.query(
+        connDB.query(
             `DELETE FROM quoteitems WHERE quoteid=${quote.id};
              DELETE FROM quotenotes WHERE quoteid=${quote.id}`, (err, result) => {
             if (err) throw err;
             // console.log(result)
             // insert items and notes
             for (item of quote.items) {
-                connAWS.query(
+                connDB.query(
                     `INSERT INTO quoteitems (quoteid, text, price)
                     VALUES(${quote.id}, '${item.text}', '${item.price}')`, (err, result) => {
                         if (err) throw err;
@@ -232,7 +232,7 @@ app.post('/updateQuote', (req, res) => {
                     })
             }
             for (note of quote.notes) {
-                connAWS.query(
+                connDB.query(
                     `INSERT INTO quotenotes (quoteid, text)
                     VALUES(${quote.id}, '${note.text}')`, (err, result) => {
                         if (err) throw err;
