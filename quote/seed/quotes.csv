@@ -1,0 +1,5 @@
+id,date,associateid,custid,email,amount,commission,status
+"1","2021-01-01 01:01:01","1","1","mailbox1@example.com","450.00","18.00","ordered"
+"2","2021-02-02 02:02:02","2","2","mailbox2@example.com","450.00","0.00","sanctioned"
+"3","2021-03-03 03:03:03","3","3","mailbox3@example.com","450.00","0.00","finalized"
+"4","2021-04-04 04:04:04","1","4","mailbox4@example.com","494.93","0.00","open"

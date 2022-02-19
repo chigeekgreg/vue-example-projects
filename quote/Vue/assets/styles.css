@@ -86,7 +86,7 @@ input:focus {
 }
 .associates {
       display: grid;
-      grid-template-columns: 120px 160px 140px;
+      grid-template-columns: 120px 160px 160px 140px;
       grid-auto-rows: 25px;
 }
 .modal-mask {
