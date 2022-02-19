@@ -4,7 +4,7 @@ const axios = require('axios');
 const mysql = require('mysql');
 const config = require('./config.json');
 var connLeg;
-var connAWS;
+var connDB;
 
 (function protectLeg() {
     connLeg = mysql.createConnection(config.legacy)
@@ -19,13 +19,13 @@ var connAWS;
     })
 })();
 
-(function protectAWS() {
-    connAWS = mysql.createConnection(config.amazon)
-    connAWS.on('error', err => {
+(function protectDB() {
+    connDB = mysql.createConnection(config.db)
+    connDB.on('error', err => {
         if (err.code === 'PROTOCOL_CONNECTION_LOST' ||
             err.code === 'ECONNRESET') {
-            console.log('AWS connection lost, reopen connection')
-            protectAWS()
+            console.log('DB connection lost, reopen connection')
+            protectDB()
         } else {
             throw err
         }
@@ -57,7 +57,7 @@ app.get('/getParts', (req, res) => {
     // console.log(stmt)
     connLeg.query(stmt, function(err, rows){
         if (err) throw err;       
-        connAWS.query(`SELECT * FROM inventory;`, function(err, invs){
+        connDB.query(`SELECT * FROM inventory;`, function(err, invs){
             if (err) throw err; 
             // console.log(invs)  
             for (part of rows) {
@@ -95,7 +95,7 @@ app.get('/getOrders', (req, res) => {
         stmt += ` WHERE status = '${req.query.status}';`
     }
     // console.log(stmt)
-    connAWS.query(stmt, function(err, rows){
+    connDB.query(stmt, function(err, rows){
         if (err) throw err;
         // console.log('rows: ', rows);
         res.send(rows);
@@ -104,9 +104,9 @@ app.get('/getOrders', (req, res) => {
 
 app.get('/getOrder', (req, res) => {
     // console.log(req.query);
-    connAWS.query(`SELECT * FROM orders WHERE id = ${req.query.id};`, function(err, rows){
+    connDB.query(`SELECT * FROM orders WHERE id = ${req.query.id};`, function(err, rows){
         if (err) throw err;       
-        connAWS.query(`SELECT * FROM orderitems WHERE orderid = ${req.query.id};`, function(err, items){
+        connDB.query(`SELECT * FROM orderitems WHERE orderid = ${req.query.id};`, function(err, items){
             if (err) throw err;
             // console.log('items: ', items);
             rows[0].items = items;
@@ -118,7 +118,7 @@ app.get('/getOrder', (req, res) => {
 
 app.get('/closeOrder', (req, res) => {
     // console.log(req.query);
-    connAWS.query(`UPDATE orders SET status='filled' WHERE id = ${req.query.id};`, function(err, result){
+    connDB.query(`UPDATE orders SET status='filled' WHERE id = ${req.query.id};`, function(err, result){
         if (err) throw err;       
         res.send(result);
     });
@@ -126,7 +126,7 @@ app.get('/closeOrder', (req, res) => {
 
 app.post('/createOrder', (req, res) => {
     // console.log(req.body);
-    connAWS.query(
+    connDB.query(
         `INSERT INTO orders (name, email, date, amount, weight, shipping, address) 
         VALUES ( '${req.body.name}','${req.body.email}','${req.body.date}',${req.body.amount},${req.body.weight},${req.body.shipping},'${req.body.address}');`,
         // SELECT LAST_INSERT_ID();`,
@@ -135,7 +135,7 @@ app.post('/createOrder', (req, res) => {
             // console.log("order created: " + result.insertId);
             for (part of req.body.items) {
                 // console.log(part)
-                connAWS.query(
+                connDB.query(
                     `INSERT INTO orderitems (orderid, partnumber, quantity)
                     VALUES (${result.insertId}, ${part.number}, ${part.quantity});`
                 ),
@@ -151,11 +151,11 @@ app.post('/createOrder', (req, res) => {
 
 app.get('/setInventory', (req, res) => {
     // console.log(req.query);
-    connAWS.query(`UPDATE inventory SET quantity=${req.query.quantity} WHERE id = ${req.query.id};`, function(err, result){
+    connDB.query(`UPDATE inventory SET quantity=${req.query.quantity} WHERE id = ${req.query.id};`, function(err, result){
         if (err) throw err; 
         // console.log(result) 
         if (result.affectedRows == 0) {
-            connAWS.query(`INSERT INTO inventory (id, quantity) VALUES (${req.query.id}, ${req.query.quantity});`, function(err, result){
+            connDB.query(`INSERT INTO inventory (id, quantity) VALUES (${req.query.id}, ${req.query.quantity});`, function(err, result){
                 if (err) throw err; 
                 // console.log(result)
                 res.send(result); 
@@ -167,7 +167,7 @@ app.get('/setInventory', (req, res) => {
 })
 
 app.get('/getBrackets', (req, res) => {
-    connAWS.query('SELECT * FROM brackets', function(err, rows){
+    connDB.query('SELECT * FROM brackets', function(err, rows){
         if (err) throw err;
         // console.log('rows: ', rows);
         res.send(rows);
@@ -176,7 +176,7 @@ app.get('/getBrackets', (req, res) => {
 
 app.post('/setBrackets', (req, res) => {
     // console.log(req.body);
-    connAWS.query('DELETE FROM brackets', function(err, rows) {
+    connDB.query('DELETE FROM brackets', function(err, rows) {
         if (err) throw err;
         // console.log(rows);
         if (req.body.length === 0) {
@@ -189,7 +189,7 @@ app.post('/setBrackets', (req, res) => {
         }
         stmt = stmt.replace(/,$/,';')
         // console.log(stmt);
-        connAWS.query(stmt, function(err, rows){
+        connDB.query(stmt, function(err, rows){
             if (err) throw err;
             // console.log('rows: ', rows);
             res.send(rows);

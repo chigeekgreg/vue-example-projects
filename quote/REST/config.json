@@ -1,0 +1,14 @@
+{
+    "legacy": {
+        "host": "legacydb",
+        "user": "student",
+        "password": "student",
+        "database": "csci467"
+    },
+    "db": {
+        "host": "db",
+        "user": "vue-example-projects",
+        "password": "talHJqqDvD",
+        "database": "vue-example-projects"
+    }
+}
