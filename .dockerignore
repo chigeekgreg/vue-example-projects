@@ -1,0 +1,12 @@
+*
+!index.html
+!*.png
+!quote/Vue/*.*
+!product/Vue/*.*
+!product/Vue/assets/styles.css
+!quote/Vue/assets/styles.css
+!product/Vue/components/*.js
+!quote/Vue/components/*.js
+!nginx-default.conf
+!nginx-default.prod.conf
+!pics

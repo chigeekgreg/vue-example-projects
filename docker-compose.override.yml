@@ -1,0 +1,34 @@
+version: '2.4'
+services:
+  legacydb:
+    image: mariadb
+    environment:
+      MARIADB_ROOT_PASSWORD: "${LEGACYDB_ROOT_PASSWORD}"
+      MARIADB_DATABASE: "${LEGACYDB_DATABASE}"
+      MARIADB_USER: "${LEGACYDB_USER}"
+      MARIADB_PASSWORD: "${LEGACYDB_PASSWORD}"
+    volumes:
+      - "legacydb:/var/lib/mysql"
+      - "./legacydb:/docker-entrypoint-initdb.d"
+    healthcheck:
+      test: ["CMD", "mysql", "--protocol=tcp", "-u$LEGACYDB_USER", "-p$LEGACYDB_PASSWORD", "$LEGACYDB_DATABASE", "--execute=UPDATE customers SET name = CONCAT('Customer: ',CAST(NOW() AS CHAR)) WHERE id = 33;"]
+      interval: 60s
+      start_period: 30s
+      timeout: 5s
+      retries: 2
+    restart: always
+  product-rest:
+    depends_on:
+      db:
+        condition: service_healthy
+      legacydb:
+        condition: service_healthy
+  quote-rest:
+    depends_on:
+      db:
+        condition: service_healthy
+      legacydb:
+        condition: service_healthy
+volumes:
+  db:
+  legacydb:

@@ -1,0 +1,16 @@
+version: '2.4'
+services:
+  product-rest:
+    volumes:
+      - "./config/config.prod.json:/usr/src/app/config.json"
+  quote-rest:
+    volumes:
+      - "./config/config.prod.json:/usr/src/app/config.json"
+  web:
+    image: vue-example-projects-web:prod
+    build:
+      target: prod
+    volumes:
+      - "nginx-cache:/data/nginx/cache"
+volumes:
+  nginx-cache:

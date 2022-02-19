@@ -1,0 +1,5 @@
+id,name,password,address,commission
+"1","alice","alice","123 Fake St., Ste. A","18.00"
+"2","bob","bob","234 Fake St., Ste. B","0.00"
+"3","charlie","charlie","345 Fake St., Ste. C","0.00"
+"4","John Doe","john","456 Fake St., Ste. B","0.00"

@@ -1,0 +1,51 @@
+version: '2.4'
+services:
+  db:
+    image: mariadb
+    environment:
+      MARIADB_ROOT_PASSWORD: "${MARIADB_ROOT_PASSWORD}"
+      MARIADB_DATABASE: "${MARIADB_DATABASE}"
+      MARIADB_USER: "${MARIADB_USER}"
+      MARIADB_PASSWORD: "${MARIADB_PASSWORD}"
+    volumes:
+      - "db:/var/lib/mysql"
+      - "./sql:/docker-entrypoint-initdb.d"
+      - "./seed:/seed"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "-u$MARIADB_USER", "-p$MARIADB_PASSWORD", "ping", "--silent"]
+      interval: 5s
+      start_period: 10s
+      timeout: 5s
+      retries: 2
+    restart: always
+  product-rest:
+    image: product-rest
+    build: ./product/REST
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: always
+  quote-rest:
+    image: quote-rest
+    build: ./quote/REST
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: always
+  web:
+    image: vue-example-projects-web
+    build:
+      context: .
+      args:
+        - "PRODUCT_REST_URL=${PRODUCT_REST_URL}"
+        - "QUOTE_REST_URL=${QUOTE_REST_URL}"
+    ports:
+      - "${WEB_PORT}:80"
+    depends_on:
+      product-rest:
+        condition: service_healthy
+      quote-rest:
+        condition: service_healthy
+    restart: always
+volumes:
+  db:
