@@ -15,7 +15,6 @@ services:
   rest:
     image: product-rest
     build: ./REST
-    restart: always
     depends_on:
       - "db"
     restart: always
