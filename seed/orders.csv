@@ -1,3 +1,3 @@
-id,name,email,date,amount,weight,shipping,address
-"1","John Doe","john@example.com","2021-11-08 00:00:00","870.59","12.05","2.50","123 Fake St.","filled",
-"2","John Doe","john@example.com","2021-11-08 00:00:00","225.50","202.48","10.00","123 Fake St","open";
+id,name,email,date,amount,weight,shipping,address,status
+"1","John Doe","john@example.com","2021-11-08 00:00:00","870.59","12.05","2.50","123 Fake St.","filled"
+"2","John Doe","john@example.com","2021-11-08 00:00:00","225.50","202.48","10.00","123 Fake St","open"
